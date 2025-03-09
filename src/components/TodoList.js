@@ -13,7 +13,7 @@ const TodoList = () => {
         axios.get(API_BASE_URL)
             .then(res => setTodos(res.data))
             .catch(error => console.log("Error fetching todos:", error));
-    }, [API_BASE_URL]);
+    }, []);
 
     const addTodo = async () => {
         if (!text.trim() || text.length < 5) {
