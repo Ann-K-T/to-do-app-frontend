@@ -16,10 +16,9 @@ const TodoList = () => {
     }, [API_BASE_URL ]);
 
     const addTodo = async () => {
-        if (!text.trim() || text.length < 5) {
-            alert("Todo must be at least 5 characters long");
+        if (!text.trim())         
             return;
-        }
+        
     
         try {
             if (editingTodo) {
