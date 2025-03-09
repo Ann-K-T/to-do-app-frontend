@@ -16,24 +16,28 @@ const TodoList = () => {
 
     const addTodo = async () => {
         if (!text.trim()) return;
-
+    
         try {
             if (editingTodo) {
-                
-                const response = await axios.put(`${API_BASE_URL}/${editingTodo._id}`, { text });
+                const response = await axios.put(`${API_BASE_URL}/${editingTodo._id}`, 
+                    { text }, 
+                    { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
+                );
                 setTodos(todos.map(todo => (todo._id === editingTodo._id ? response.data : todo)));
-                setEditingTodo(null); 
+                setEditingTodo(null);
             } else {
-                
-                const response = await axios.post(API_BASE_URL, { text });
+                const response = await axios.post(API_BASE_URL, 
+                    { text }, 
+                    { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
+                );
                 setTodos([...todos, response.data]);
             }
             setText(""); 
         } catch (error) {
-            console.error("Error saving todo:", error);
+            console.error("Error saving todo:", error.response ? error.response.data : error.message);
         }
     };
-
+    
     const editTodo = (todo) => {
         setEditingTodo(todo); 
         setText(todo.text); 
