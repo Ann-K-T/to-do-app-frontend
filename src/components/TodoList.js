@@ -20,7 +20,7 @@ const TodoList = () => {
         try {
             if (editingTodo) {
                 const response = await axios.put(`${API_BASE_URL}/${editingTodo._id}`, 
-                    { text }, 
+                    { title: text }, 
                     { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
                 );
                 setTodos(todos.map(todo => (todo._id === editingTodo._id ? response.data : todo)));
