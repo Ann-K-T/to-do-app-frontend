@@ -16,7 +16,7 @@ const TodoList = () => {
     }, [API_BASE_URL ]);
 
     const addTodo = async () => {
-        if (!text.trim())         
+        if (!text.trim())        
             return;
         
     
