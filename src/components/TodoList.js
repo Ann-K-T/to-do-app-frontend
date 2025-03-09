@@ -24,14 +24,14 @@ const TodoList = () => {
         try {
             if (editingTodo) {
                 const response = await axios.put(`${API_BASE_URL}/${editingTodo._id}`, 
-                    { title: text }, 
+                    { text }, // ✅ Sending "text" instead of "title"
                     { headers: { 'Content-Type': 'application/json' } }
                 );
                 setTodos(todos.map(todo => (todo._id === editingTodo._id ? response.data : todo)));
                 setEditingTodo(null);
             } else {
                 const response = await axios.post(API_BASE_URL, 
-                    { title: text }, 
+                    { text }, // ✅ Sending "text" instead of "title"
                     { headers: { 'Content-Type': 'application/json' } }
                 );
                 setTodos([...todos, response.data]);
@@ -44,7 +44,7 @@ const TodoList = () => {
     
     const editTodo = (todo) => {
         setEditingTodo(todo); 
-        setText(todo.title); // Ensure "title" is used, matching backend schema
+        setText(todo.text); // ✅ Using "text" instead of "title"
     };
 
     const deleteTodo = async (id) => {
@@ -92,7 +92,7 @@ const TodoList = () => {
             <ul>
                 {todos.map(todo => (                    
                     <li key={todo._id} className={todo.completed ? "completed" : ""}>
-                        <span className="todo-text">{todo.title}</span>
+                        <span className="todo-text">{todo.text}</span> 
                         <button className="btn complete" onClick={() => completeTodo(todo._id, todo.completed)}>Complete</button>
                         <button className="btn edit" onClick={() => editTodo(todo)}>Edit</button>
                         <button className="btn delete" onClick={() => deleteTodo(todo._id)}>Delete</button>
