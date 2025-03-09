@@ -11,7 +11,7 @@ const TodoList = () => {
     useEffect(() => {
         axios.get(API_BASE_URL)
             .then(res => setTodos(res.data))
-            .catch(error => console.error("Error fetching todos:", error));
+            .catch(error => console.log("Error fetching todos:", error));
     }, [API_BASE_URL]);
 
     const addTodo = async () => {
@@ -34,7 +34,7 @@ const TodoList = () => {
             }
             setText(""); 
         } catch (error) {
-            console.error("Error saving todo:", error.response ? error.response.data : error.message);
+            console.log("Error saving todo:", error.response ? error.response.data : error.message);
         }
     };
     
@@ -48,7 +48,7 @@ const TodoList = () => {
             await axios.delete(`${API_BASE_URL}/${id}`);
             setTodos(todos.filter(todo => todo._id !== id));
         } catch (error) {
-            console.error("Error deleting todo:", error);
+            console.log("Error deleting todo:", error);
         }
     };
 
@@ -70,7 +70,7 @@ const TodoList = () => {
                 todo._id === id ? { ...todo, completed: response.data.completed } : todo
             ));
         } catch (error) {
-            console.error("Error updating todo:", error);
+            console.log("Error updating todo:", error);
         }
     };
     
