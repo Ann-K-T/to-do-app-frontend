@@ -27,7 +27,7 @@ const TodoList = () => {
                 setEditingTodo(null);
             } else {
                 const response = await axios.post(API_BASE_URL, 
-                    { text }, 
+                    { title: text }, 
                     { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
                 );
                 setTodos([...todos, response.data]);
