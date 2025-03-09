@@ -6,7 +6,8 @@ const TodoList = () => {
     const [text, setText] = useState("");
     const [editingTodo, setEditingTodo] = useState(null);
 
-    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
+    // Ensure the API URL is defined
+    const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/api/todos";
 
     useEffect(() => {
         axios.get(API_BASE_URL)
@@ -15,20 +16,23 @@ const TodoList = () => {
     }, [API_BASE_URL]);
 
     const addTodo = async () => {
-        if (!text.trim()) return;
+        if (!text.trim() || text.length < 5) {
+            alert("Todo must be at least 5 characters long");
+            return;
+        }
     
         try {
             if (editingTodo) {
                 const response = await axios.put(`${API_BASE_URL}/${editingTodo._id}`, 
                     { title: text }, 
-                    { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
+                    { headers: { 'Content-Type': 'application/json' } }
                 );
                 setTodos(todos.map(todo => (todo._id === editingTodo._id ? response.data : todo)));
                 setEditingTodo(null);
             } else {
                 const response = await axios.post(API_BASE_URL, 
                     { title: text }, 
-                    { headers: { 'Content-Type': 'application/json' } } // ✅ Fix missing headers
+                    { headers: { 'Content-Type': 'application/json' } }
                 );
                 setTodos([...todos, response.data]);
             }
@@ -40,7 +44,7 @@ const TodoList = () => {
     
     const editTodo = (todo) => {
         setEditingTodo(todo); 
-        setText(todo.text); 
+        setText(todo.title); // Ensure "title" is used, matching backend schema
     };
 
     const deleteTodo = async (id) => {
@@ -52,7 +56,6 @@ const TodoList = () => {
         }
     };
 
-    
     const handleKeyDown = (event) => {
         if (event.key === "Enter") {
             addTodo();
@@ -61,11 +64,11 @@ const TodoList = () => {
 
     const completeTodo = async (id, currentStatus) => {
         try {
-            const response = await axios.put(`${API_BASE_URL}/${id}`, {
-                completed: !currentStatus 
-            });
+            const response = await axios.put(`${API_BASE_URL}/${id}`, 
+                { completed: !currentStatus },
+                { headers: { 'Content-Type': 'application/json' } }
+            );
     
-            
             setTodos(todos.map(todo => 
                 todo._id === id ? { ...todo, completed: response.data.completed } : todo
             ));
@@ -73,7 +76,6 @@ const TodoList = () => {
             console.log("Error updating todo:", error);
         }
     };
-    
 
     return (
         <div className="todoListContainer">
@@ -83,24 +85,22 @@ const TodoList = () => {
                 onChange={(e) => setText(e.target.value)} 
                 onKeyDown={handleKeyDown} 
             />
-            <button  className="btn add" onClick={addTodo}>{editingTodo ? "Update" : "Add"}</button>
+            <button className="btn add" onClick={addTodo}>
+                {editingTodo ? "Update" : "Add"}
+            </button>
             
             <ul>
                 {todos.map(todo => (                    
                     <li key={todo._id} className={todo.completed ? "completed" : ""}>
-                        
-                        <span className="todo-text">{todo.text}</span>
-                        <button className="btn complete" onClick={()=> completeTodo(todo._id, todo.completed)}>Complete</button>
+                        <span className="todo-text">{todo.title}</span>
+                        <button className="btn complete" onClick={() => completeTodo(todo._id, todo.completed)}>Complete</button>
                         <button className="btn edit" onClick={() => editTodo(todo)}>Edit</button>
                         <button className="btn delete" onClick={() => deleteTodo(todo._id)}>Delete</button>
                     </li>
                 ))}
             </ul>
-
         </div>
     );
 };
 
 export default TodoList;
-
-
